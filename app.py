@@ -65,9 +65,20 @@ else:
     # DIRECIONAMENTO DE INTERFACE (Admin vs Jogador)
     if user["is_admin"]:
         st.title("🛡️ Painel do Administrador")
-        st.write("Aqui ficarão suas telas de controle de prazos e resultados.")
-        # Futuramente importaremos as views do admin aqui
+        
+        # Cria um menu de abas para o Admin navegar
+        aba_prazos, aba_resultados = st.tabs(["Prazos e Pontos", "Resultados dos Jogos"])
+        
+        with aba_prazos:
+            # Importa e exibe a tela de configuração de prazos e pontos
+            from views.admin.prazos import exibir_tela_prazos
+            exibir_tela_prazos()
+            
+        with aba_resultados:
+            st.subheader("Gerenciar Jogos e Resultados")
+            st.write("Aqui ficará a tela para cadastrar partidas e preencher os placares reais.")
+            
     else:
         st.title("🏆 Área do Jogador")
+        st.write(f"Bem-vindo ao jogo, **{user['nome']}**!")
         st.write("Aqui ficarão os palpites e o ranking dos seus amigos.")
-        # Futuramente importaremos as views do jogador aqui
