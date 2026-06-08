@@ -44,7 +44,6 @@ if not st.session_state.logado:
                         "email": usuario["email"],
                         "is_admin": usuario["eh_admin"] == 1
                     }
-                    # Recarrega a página já logado
                     st.rerun()
                 else:
                     st.error("❌ E-mail não encontrado. Crie uma conta na aba ao lado!")
@@ -84,29 +83,20 @@ else:
     else:
         st.title("🏆 Área do Jogador")
         
-        # Cria o menu de abas para navegação dos amigos participantes
+        # Menu de abas dos jogadores
         aba_palpites, aba_ranking = st.tabs(["🎯 Meus Palpites", "📊 Classificação Geral"])
         
         with aba_palpites:
-            # Importa e exibe a tela de palpites passando o ID do usuário logado
             from views.jogador.palpites import exibir_tela_palpites
             exibir_tela_palpites(user["id"])
             
         with aba_ranking:
-            st.subheader("📊 Ranking do Bolão")
-            st.write("Veja a pontuação de todos os participantes em tempo real:")
+            st.subheader("📊 Classificação Geral do Grupo")
             
-            # Puxa os dados organizados direto do nosso motor inteligente (engine)
+            # Puxa os dados organizados do motor (engine)
             from core.engine import gerar_ranking_geral
             ranking = gerar_ranking_geral()
             
-            if not ranking:
-                st.info("Nenhum jogador pontuou ainda. O ranking será atualizado assim que as partidas começarem!")
-            else:
-                # Exibe o ranking de forma visual usando uma tabela limpa
-                import pandas as pd
-                df_ranking = pd.DataFrame(ranking)
-                df_ranking.columns = ["Nome", "E-mail", "Pontuação Total"]
-                df_ranking.index = df_ranking.index + 1 # Ajusta o índice para começar em 1º lugar
-                
-                st.table(df_ranking)
+            # Chama a nossa nova interface turbinada com pódio e cores
+            from views.jogador.ranking import exibir_ranking_turbinado
+            exibir_ranking_turbinado(ranking)
